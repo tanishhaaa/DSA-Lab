@@ -1,0 +1,90 @@
+Code:
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_VERTICES 100
+
+// Function prototypes
+void bfs(int graph[MAX_VERTICES][MAX_VERTICES], int visited[], int numVertices, int startVertex);
+void dfs(int graph[MAX_VERTICES][MAX_VERTICES], int visited[], int numVertices, int vertex);
+void initializeVisited(int visited[], int numVertices);
+
+int main() {
+    int graph[MAX_VERTICES][MAX_VERTICES] = {0}; // Adjacency matrix
+    int numVertices, edges, i, j;
+    int startVertex;
+
+    printf("Enter the number of vertices: ");
+    scanf("%d", &numVertices);
+
+    printf("Enter the number of edges: ");
+    scanf("%d", &edges);
+
+    printf("Enter the edges (from_vertex to_vertex):\n");
+    for (i = 0; i < edges; i++) {
+        int from, to;
+        scanf("%d %d", &from, &to);
+        graph[from][to] = 1; // Directed edge from 'from' to 'to'
+    }
+
+    printf("Enter the starting vertex for BFS: ");
+    scanf("%d", &startVertex);
+    
+    // BFS
+    int visited[MAX_VERTICES] = {0}; // Initialize visited array
+    printf("BFS traversal starting from vertex %d:\n", startVertex);
+    bfs(graph, visited, numVertices, startVertex);
+
+    // Reset visited array for DFS
+    initializeVisited(visited, numVertices);
+    
+    printf("\nEnter the starting vertex for DFS: ");
+    scanf("%d", &startVertex);
+    
+    printf("DFS traversal starting from vertex %d:\n", startVertex);
+    dfs(graph, visited, numVertices, startVertex);
+
+    return 0;
+}
+
+// Function to perform BFS
+void bfs(int graph[MAX_VERTICES][MAX_VERTICES], int visited[], int numVertices, int startVertex) {
+    int queue[MAX_VERTICES], front = -1, rear = -1;
+    
+    // Enqueue the starting vertex
+    queue[++rear] = startVertex;
+    visited[startVertex] = 1;
+
+    while (front != rear) {
+        front++;
+        int currentVertex = queue[front];
+        printf("%d ", currentVertex);
+
+        for (int i = 0; i < numVertices; i++) {
+            if (graph[currentVertex][i] == 1 && !visited[i]) {
+                queue[++rear] = i; // Enqueue unvisited adjacent vertices
+                visited[i] = 1;     // Mark as visited
+            }
+        }
+    }
+}
+
+// Function to perform DFS
+void dfs(int graph[MAX_VERTICES][MAX_VERTICES], int visited[], int numVertices, int vertex) {
+    visited[vertex] = 1; // Mark the current node as visited
+    printf("%d ", vertex); // Print the current node
+
+    for (int i = 0; i < numVertices; i++) {
+        if (graph[vertex][i] == 1 && !visited[i]) {
+            dfs(graph, visited, numVertices, i); // Recur for unvisited adjacent vertices
+        }
+    }
+}
+
+// Function to initialize the visited array
+void initializeVisited(int visited[], int numVertices) {
+    for (int i = 0; i < numVertices; i++) {
+        visited[i] = 0; // Set all vertices as unvisited
+    }
+}
