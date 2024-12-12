@@ -1,0 +1,169 @@
+Code:
+
+#include <stdio.h>
+#include <stdlib.h>
+
+// Function to swap two elements
+void swap(int* a, int* b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+// Function to display the array
+void displayArray(int arr[], int size) {
+    for (int i = 0; i < size; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+}
+
+// Quick Sort partition function (pivot is the first element)
+int partition(int arr[], int low, int high) {
+    int pivot = arr[low];  // Choosing the pivot as the first element
+    int i = low + 1;       // Starting from the element after the pivot
+    int j = high;          // Starting from the end of the array
+
+    printf("Choosing pivot = %d at index %d\n", pivot, low);
+
+    while (i <= j) {
+        while (i <= high && arr[i] <= pivot) {
+            i++;
+        }
+        while (arr[j] > pivot) {
+            j--;
+        }
+        if (i < j) {
+            swap(&arr[i], &arr[j]);
+            printf("Swapped %d and %d: ", arr[i], arr[j]);
+            displayArray(arr, high + 1);
+        }
+    }
+
+    // Place pivot in its correct position
+    swap(&arr[low], &arr[j]);
+    printf("Placed pivot (%d) at position %d: ", pivot, j);
+    displayArray(arr, high + 1);
+
+    return j;
+}
+
+// Quick Sort function (pivot is the element at index 0 of sub-array)
+void quickSort(int arr[], int low, int high) {
+    if (low < high) {
+        int pi = partition(arr, low, high);  // Partitioning index
+        printf("Recursively sorting the left sub-array (arr[%d] to arr[%d])\n", low, pi - 1);
+        quickSort(arr, low, pi - 1);  // Sort left sub-array
+        printf("Recursively sorting the right sub-array (arr[%d] to arr[%d])\n", pi + 1, high);
+        quickSort(arr, pi + 1, high);  // Sort right sub-array
+    }
+}
+
+// Merge function for Merge Sort
+void merge(int arr[], int l, int m, int r) {
+    int i, j, k;
+    int n1 = m - l + 1;
+    int n2 = r - m;
+
+    int L[n1], R[n2];  // Temporary arrays
+
+    // Copy data to temporary arrays L[] and R[]
+    for (i = 0; i < n1; i++)
+        L[i] = arr[l + i];
+    for (j = 0; j < n2; j++)
+        R[j] = arr[m + 1 + j];
+
+    i = 0; // Initial index of first sub-array
+    j = 0; // Initial index of second sub-array
+    k = l; // Initial index of merged sub-array
+    while (i < n1 && j < n2) {
+        if (L[i] <= R[j]) {
+            arr[k] = L[i];
+            i++;
+        } else {
+            arr[k] = R[j];
+            j++;
+        }
+        k++;
+    }
+
+    // Copy the remaining elements of L[], if any
+    while (i < n1) {
+        arr[k] = L[i];
+        i++;
+        k++;
+    }
+
+    // Copy the remaining elements of R[], if any
+    while (j < n2) {
+        arr[k] = R[j];
+        j++;
+        k++;
+    }
+
+    printf("After merging: ");
+    displayArray(arr, r + 1);
+}
+
+// Merge Sort function
+void mergeSort(int arr[], int l, int r) {
+    if (l < r) {
+        int m = l + (r - l) / 2;
+
+        printf("Splitting array from index %d to %d\n", l, r);
+
+        // Sort first and second halves
+        mergeSort(arr, l, m);
+        mergeSort(arr, m + 1, r);
+
+        // Merge the sorted halves
+        merge(arr, l, m, r);
+    }
+}
+
+int main() {
+    int choice, n;
+
+    printf("Enter the number of elements: ");
+    scanf("%d", &n);
+
+    int arr[n];
+    printf("Enter %d elements: ", n);
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &arr[i]);
+    }
+
+    do {
+        printf("\nChoose sorting algorithm:\n");
+        printf("1. Quick Sort\n");
+        printf("2. Merge Sort\n");
+        printf("3. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("\nPerforming Quick Sort...\n");
+                quickSort(arr, 0, n - 1);
+                printf("Sorted array: ");
+                displayArray(arr, n);
+                break;
+
+            case 2:
+                printf("\nPerforming Merge Sort...\n");
+                mergeSort(arr, 0, n - 1);
+                printf("Sorted array: ");
+                displayArray(arr, n);
+                break;
+
+            case 3:
+                printf("Exiting...\n");
+                break;
+
+            default:
+                printf("Invalid choice! Please try again.\n");
+        }
+    } while (choice != 3);
+
+    return 0;
+}
