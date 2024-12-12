@@ -1,0 +1,41 @@
+Code:
+
+#include <stdio.h>
+
+// Function to perform binary search
+int binarySearch(int arr[], int size, int target) {
+    int left = 0, right = size - 1;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+
+        // Check if the target is present at mid
+        if (arr[mid] == target)
+            return mid;
+
+        // If target is greater, ignore the left half
+        if (arr[mid] < target)
+            left = mid + 1;
+
+        // If target is smaller, ignore the right half
+        else
+            right = mid - 1;
+    }
+
+    // Target is not present in the array
+    return -1;
+}
+
+int main() {
+    int products[] = {101, 203, 305, 407, 509};
+    int size = sizeof(products) / sizeof(products[0]);
+    int target = 305;
+    int result = binarySearch(products, size, target);
+
+    if (result == -1)
+        printf("Product not found.\n");
+    else
+        printf("Product found at index %d.\n", result);
+
+    return 0;
+}
